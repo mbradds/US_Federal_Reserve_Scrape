@@ -7,21 +7,9 @@ Created on Mon Jan 28 18:50:12 2019
 """
 
 import requests
-from requests.auth import HTTPBasicAuth
-import io
-import zipfile
 import pandas as pd
-import re
-import os
-import datetime
 import numpy as np
-import dateutil
-import sys
 import time
-import matplotlib.pylab as plt
-
-import sqlalchemy
-from sqlalchemy import create_engine
 
 headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 6.0; WOW64; rv:24.0) Gecko/20100101 Firefox/24.0'}
 
@@ -68,7 +56,7 @@ def get_codes(test):
         s = pd.Series(country_dict)
         df_code = pd.DataFrame({'Country':s.index, 'code':s.values})
         if test:
-            df_code = df_code.sample(n=4)
+            df_code = df_code.sample(n=1)
         return(df_code)
 
 def get_structure(url_l, code_frame):
@@ -109,14 +97,14 @@ def get_structure(url_l, code_frame):
     
 def exchange_list(df_list, base_url):
     exchange_data = []
+    url_ext = base_url
     for df in df_list:
         
         try:
      
-            for x,m,c in zip(df['code'],df['Monetary unit'],df['Country']):
-    
-                url_ext = base_url.replace('YYYY',str(df['year'][1])) # add the date to the end of url
-                url_ext = url_ext.replace('CC', str(x))               # add the link code to url
+            for x,m,c,y in zip(df['code'],df['Monetary unit'],df['Country'],df['year']):
+                url_ext = base_url.replace('YYYY',str(y)) # add the date to the end of url
+                url_ext = url_ext.replace('CC', str(x))       
                 r = requests.get(url_ext, allow_redirects=True, stream=True, headers=headers)
                 if r.status_code == requests.codes.ok:
                     df_ex = pd.read_html(url_ext, header = 0)[0]
