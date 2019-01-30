@@ -114,7 +114,7 @@ def exchange_list(df_list, base_url):
                     exchange_data.append(df_ex)
                 
                 else:
-                    print('couldnt get data for' +str(x)+' '+str(date))
+                    print('couldnt get data for' +str(x)+' '+str(y))
                     
         except:
             print('Cant get rates for'+' '+str(c)+' '+str(url_ext))
